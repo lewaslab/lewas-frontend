@@ -1,0 +1,260 @@
+{
+  "publications": {
+    "journal_papers_book_chapters": [
+      {
+        "authors": "Md. Y. Naseri et al.",
+        "year": "2024",
+        "title": "Integrating data science into undergraduate science and engineering courses: Lessons learned by instructors in a multiuniversity research-practice partnership",
+        "publication": "IEEE Trans. Educ., 2024",
+        "doi": "10.1109/TE.2024.3436041"
+      },
+      {
+        "authors": "Md. Y. Naseri et al.",
+        "year": "submitted",
+        "title": "Integrating data science into undergraduate science and engineering courses through discipline-specific modules: The student perspective",
+        "publication": "Eur. J. Eng. Educ., submitted for publication"
+      },
+      {
+        "authors": "Smith J.D., Lohani V.K.",
+        "year": "2019",
+        "title": "Development of a Virtual Environment for Environmental Monitoring Education",
+        "publication": "In: Auer M., Langmann R. (eds) Smart Industry & Smart Education. REV 2018. Lecture Notes in Networks and Systems, vol 47. Springer"
+      },
+      {
+        "authors": "Brogan, D. S., D. Basu and V. K. Lohani",
+        "year": "2017",
+        "title": "A Virtual Learning System in Environmental Monitoring",
+        "publication": "Pages 352-367 in the book Engineering Education for a Smart Society: World Engineering Education Forum & Global Engineering Deans Council 2016, M. E. Auer and K.-S. Kim eds., Springer, 2017. Advances in Intelligent Systems and Computing series vol. 627. ISBN: 978-3-319-60937-9. DOI: 10.1007/978-3-319-60937-9"
+      },
+      {
+        "authors": "Brogan, D. S., W. M. McDonald, V. K. Lohani, R. L. Dymond and A. J. Bradner",
+        "year": "2016",
+        "title": "Development and Classroom Implementation of an Environmental Data Creation and Sharing Tool",
+        "publication": "Advances in Engineering Education (AEE), 5(2), Spring 2016, pp. 1-34"
+      },
+      {
+        "authors": "McDonald, W. M., D. S. Brogan, V. K. Lohani, R. L. Dymond and R. L. Clark",
+        "year": "2015",
+        "title": "Integrating a real-time environmental monitoring lab into university and community college courses",
+        "publication": "International Journal of Engineering Education (IJEE), 31(4), 2015, pp. 1139-1157"
+      },
+      {
+        "authors": "McDonald, W. M., V. K. Lohani, R. L. Dymond and D. S. Brogan",
+        "year": "2015",
+        "title": "A Continuous, High-Frequency Environmental Monitoring System for Watershed Education Research",
+        "publication": "Journal of Engineering Education Transformations (JEET), 28(4), April 2015, pp. 11-22"
+      },
+      {
+        "authors": "Clark, H. A., W. M. McDonald, V. K. Lohani and R. L. Dymond",
+        "year": "2015",
+        "title": "Investigating the Response of a Small Urbanized Watershed to Acute Toxicity Events via Analysis of High Frequency Environmental Data",
+        "publication": "American Journal of Undergraduate Research (AJUR). 12(3), May 2015, pp. 5-17"
+      },
+      {
+        "authors": "Delgoshaei, P. and V. K. Lohani",
+        "year": "2014",
+        "title": "Design and Application of a Real-Time Water Quality Monitoring Lab in Sustainability Education",
+        "publication": "International Journal of Engineering Education, 30(2), 2014, pp. 1–14"
+      }
+    ],
+    "peer_reviewed_conference_papers": [
+      {
+        "authors": "Md. Y. Naseri, C. Snyder, M. K. Jha, and V. K. Lohani",
+        "year": "2025",
+        "title": "Integration of data science modules across interdisciplinary courses at multiple institutions: Analysis of students' and faculty perspectives",
+        "publication": "in Proc. 2025 Amer. Soc. Eng. Educ. Annu. Conf., Montreal, Canada, Jun. 22-25, 2025"
+      },
+      {
+        "authors": "Md. Y. Naseri, C. Snyder, B. Mcloughlin, S. Bhandari, N. Aryal, G. Biswas, E. Henrick, E. R. Hotchkiss, M. K. Jha, S. X. Jiang, E. C. Kern, V. K. Lohani, L. T. Marston, C. P. Vanags, and K. Xia",
+        "year": "2022",
+        "title": "A modular approach for integrating data science concepts into multiple undergraduate STEM+C courses",
+        "publication": "in Proc. 2022 Amer. Soc. Eng. Educ. Annu. Conf., Minneapolis, MN, USA, Jun. 26-29, 2022",
+        "url": "https://peer.asee.org/42010"
+      },
+      {
+        "authors": "C. Snyder, D. M. Asamen, Md. Y. Naseri, N. Aryal, G. Biswas, A. Dubey, E. Henrick, E. R. Hotchkiss, M. K. Jha, S. X. Jiang, E. C. Kern, V. K. Lohani, L. T. Marston, C. P. Vanags, and K. Xia",
+        "year": "2021",
+        "title": "Understanding data science instruction in multiple STEM disciplines",
+        "publication": "in Proc. 2021 Amer. Soc. Eng. Educ. Annu. Conf., Virtual, Jul. 26-29, 2021",
+        "url": "https://par.nsf.gov/biblio/10287718"
+      },
+      {
+        "authors": "Basu, D., D. S. Brogan, T. G. Westfall, J. Taylor, S. Emanuel, M. T. Verghese, N. Falls and V. K. Lohani",
+        "year": "2017",
+        "title": "Benefits for Undergraduates from Engagement in an Interdisciplinary Environmental Monitoring Research and Education Lab",
+        "publication": "124th ASEE Annual Conference & Exposition, Columbus, OH, USA, June 25-28, 2017"
+      },
+      {
+        "authors": "McDonald, W. M., D. S. Brogan, V. K. Lohani and G. H. Joshi",
+        "year": "2017",
+        "title": "Implementation of a First-Year Engineering Course and Active Learning Strategies at a University in India",
+        "publication": "124th ASEE Annual Conference & Exposition, Columbus, OH, USA, June 25-28, 2017"
+      },
+      {
+        "authors": "Brogan, D. S., D. Basu and V. K. Lohani",
+        "year": "2017",
+        "title": "Insights Gained from Tracking Users' Movements through a Cyberlearning System's Mediation Interface",
+        "publication": "International Conference on Remote Engineering and Virtual Instrumentation (REV2017), New York, NY, USA, March 15-17, 2017"
+      },
+      {
+        "authors": "Basu, D., W. M. McDonald, D. S. Brogan, D. Maczka and V. K. Lohani",
+        "year": "2016",
+        "title": "Combined Contribution of 12 REU Students to the Development Of the LEWAS Lab",
+        "publication": "123rd ASEE Annual Conference & Exposition, New Orleans, LA, USA, June 26-29, 2016"
+      },
+      {
+        "authors": "McDonald, W. M., D. S. Brogan, V. K. Lohani, G. H. Joshi and A. S. Shettar",
+        "year": "2016",
+        "title": "Developing a First-Year Engineering Course at a University in India: International Engineering Education Collaboration",
+        "publication": "123rd ASEE Annual Conference & Exposition, New Orleans, LA, USA, June 26-29, 2016"
+      },
+      {
+        "authors": "McDonald, W. M., D. S. Brogan, V. K. Lohani and R. L. Dymond",
+        "year": "2015",
+        "title": "Assessing Cognitive Development and Motivation with the Online Watershed Learning System (OWLS)",
+        "publication": "122nd ASEE Annual Conference & Exposition, Seattle, WA, USA, June 14–17, 2015"
+      },
+      {
+        "authors": "Basu D., J. Purviance, D. Maczka, D. S. Brogan and V. K. Lohani",
+        "year": "2015",
+        "title": "Work-in-Progress: High-Frequency Environmental Monitoring Using a Raspberry Pi-Based System",
+        "publication": "122nd ASEE Annual Conference & Exposition, Seattle, WA, USA, June 14–17, 2015"
+      },
+      {
+        "authors": "Brogan, D. S., V. K. Lohani and R. L. Dymond",
+        "year": "2014",
+        "title": "Work-in-Progress: The Platform-Independent Remote Monitoring System (PIRMS) for Situating Users in the Field Virtually",
+        "publication": "121st ASEE Annual Conference & Exposition, Indianapolis, IN, USA, June 15-18, 2014"
+      },
+      {
+        "authors": "McDonald, W. M., R. L. Dymond, V. K. Lohani, D. S. Brogan and R. L. Clark Jr.",
+        "year": "2014",
+        "title": "Integrating a Real-Time Remote Watershed Monitoring Lab into Water Sustainability Education",
+        "publication": "121st ASEE Annual Conference & Exposition, Indianapolis, IN, USA, June 15-18, 2014"
+      },
+      {
+        "authors": "McDonald, W. M., R. L. Dymond, V. K. Lohani, D. S. Brogan and D. Basu",
+        "year": "2014",
+        "title": "Insights and Challenges in Developing a Remote Real-Time Watershed Monitoring Lab",
+        "publication": "121st ASEE Annual Conference & Exposition, Indianapolis, IN, USA, June 15-18, 2014"
+      },
+      {
+        "authors": "Dymond, R. L., V. K. Lohani, D. S. Brogan and M. A. Martinez",
+        "year": "2013",
+        "title": "Integration of a Real-Time Water and Weather Monitoring System into a Hydrology Course",
+        "publication": "120th ASEE Annual Conference & Exposition, Atlanta, GA, USA, June 23-26, 2013"
+      },
+      {
+        "authors": "Delgoshaei, P. and V. K. Lohani",
+        "year": "2012",
+        "title": "Implementing a Real-time Water and Weather Quality Monitoring System with Applications in Sustainability Education",
+        "publication": "119th ASEE Annual Conference & Exposition, San Antonio, TX, USA, June 10-13, 2012"
+      },
+      {
+        "authors": "Delgoshaei, P., V. K. Lohani and C. Green",
+        "year": "2010",
+        "title": "Introducing Dataflow Programming in a Freshman Engineering Course with Applications in Sustainability Education",
+        "publication": "117th ASEE Annual Conference & Exposition, Louisville, KY, USA, June 20-23, 2010"
+      },
+      {
+        "authors": "Lohani, V. K., P. Delgoshaei and C. Green",
+        "year": "2009",
+        "title": "Integrating LabVIEW and Real-Time Monitoring into Engineering Instruction",
+        "publication": "116th ASEE Annual Conference & Exposition, Austin, TX, USA, June 14-17, 2009"
+      }
+    ],
+    "dissertations_theses_projects": [
+      {
+        "author": "Md. Y. Naseri",
+        "year": "2025",
+        "title": "Data Science for Multisectoral Water Use Management and STEM Education: A Synergistic Approach",
+        "type": "Ph.D. dissertation",
+        "department": "Dept. Civil Eng.",
+        "institution": "Virginia Polytechnic Institute and State Univ.",
+        "location": "Blacksburg, VA, USA",
+        "date": "Aug. 25, 2025"
+      },
+      {
+        "author": "Brogan, D. S.",
+        "year": "2017",
+        "title": "Development and Evaluation of the Online Watershed Learning System (OWLS)",
+        "type": "PhD Dissertation",
+        "department": "Engineering Education",
+        "institution": "Virginia Tech",
+        "date": "Jan 2017"
+      },
+      {
+        "author": "McDonald, W. M.",
+        "year": "2016",
+        "title": "Stormwater Monitoring: Evaluation of Uncertainty due to Inadequate Temporal Sampling and Applications for Engineering Education",
+        "type": "PhD Dissertation",
+        "department": "Civil Engineering",
+        "institution": "Virginia Tech",
+        "date": "May 2016"
+      },
+      {
+        "author": "Gozum, J.",
+        "year": "2016",
+        "title": "Stormflow Modeling of Webb Branch Watershed Using High-Frequency Data",
+        "type": "Master's Project Report",
+        "department": "Civil Engineering",
+        "institution": "Virginia Tech",
+        "date": "May 2016"
+      },
+      {
+        "author": "Aronhalt, T.",
+        "year": "2016",
+        "title": "Investigating Surrogate Parameters for Total Suspended Solids in the Webb Branch Watershed, Blacksburg, Virginia",
+        "type": "Master's Project Report",
+        "department": "Civil and Environmental Engineering",
+        "institution": "Virginia Tech",
+        "date": "May 2016"
+      },
+      {
+        "author": "Raamanathan, H. R.",
+        "year": "2014",
+        "title": "Methodologies for Collecting Quality Data from a Continuous High-Frequency Environmental Monitoring System: The Learning Enhanced Watershed Assessment System",
+        "type": "Master's Project Report",
+        "department": "Civil and Environmental Engineering",
+        "institution": "Virginia Tech",
+        "date": "December 2014"
+      },
+      {
+        "author": "Bradner, A.",
+        "year": "2013",
+        "title": "Correlations Between Water Quality Parameters and Levels of 4-NP in Water and Sediment of Stroubles Creek Watershed",
+        "type": "Master's Project Report",
+        "department": "Crop and Soil Environmental Sciences",
+        "institution": "Virginia Tech",
+        "date": "February 2013"
+      },
+      {
+        "author": "Rogers, M. R.",
+        "year": "2012",
+        "title": "The Assessment of Stream Discharge Models for an Environmental Monitoring Site on the Virginia Tech Campus",
+        "type": "Master's Thesis",
+        "department": "Environmental Engineering",
+        "institution": "Virginia Tech",
+        "date": "December 2012"
+      },
+      {
+        "author": "Delgoshaei, P.",
+        "year": "2012",
+        "title": "Design and Implementation of a Real-Time Environmental Monitoring Lab with Applications in Sustainability Education",
+        "type": "PhD Dissertation",
+        "department": "Engineering Education",
+        "institution": "Virginia Tech",
+        "date": "September 2012"
+      },
+      {
+        "author": "Green, C. N.",
+        "year": "2011",
+        "title": "Design and Application of a Remote Water Quality and Quantity Lab for Research and Education",
+        "type": "Master's Project Report",
+        "department": "Civil Engineering",
+        "institution": "Virginia Tech",
+        "date": "April 2011"
+      }
+    ]
+  }
+}

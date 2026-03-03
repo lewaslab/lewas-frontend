@@ -34,6 +34,12 @@ export default function TeamMembers() {
             email: "smithjer@vt.edu",
             role: "PhD Student",
             photo: "/team/jeremy.jpeg"
+        },
+        {
+            name: "Swatika Mohapatra",
+            email: "swatikam@vt.edu",
+            role: "PhD Student",
+            photo: "/team/swatika.jpeg"
         }
     ];
 

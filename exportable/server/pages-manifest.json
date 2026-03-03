@@ -1,9 +1,0 @@
-{
-  "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js",
-  "/research": "pages/research.js",
-  "/research/nsf-projects": "pages/research/nsf-projects.js",
-  "/research/ongoing-studies": "pages/research/ongoing-studies.js",
-  "/": "pages/index.js"
-}
