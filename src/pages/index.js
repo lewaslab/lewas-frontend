@@ -137,17 +137,6 @@ export default function Home() {
             </p>
           </div>
         </section>
-
-        {/* Development Notice */}
-        <section className="notice-section">
-          <div className="development-notice">
-            <div className="notice-icon">🚧</div>
-            <div className="notice-content">
-              <p><strong>Development Notice:</strong> This website is currently under active development.
-                New features and improvements are being added regularly.</p>
-            </div>
-          </div>
-        </section>
       </div>
 
       <style jsx>{`
@@ -261,32 +250,6 @@ export default function Home() {
           word-wrap: break-word;
         }
 
-        /* Development Notice */
-        .notice-section {
-          margin-top: 4rem;
-          padding: 2rem;
-          background-color: #f9f9f9;
-          border-radius: 12px;
-          border: 1px solid #e0e0e0;
-        }
-
-        .development-notice {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          color: #333;
-          font-size: 1.1rem;
-        }
-
-        .notice-icon {
-          font-size: 2rem;
-        }
-
-        .notice-content p {
-          margin: 0;
-          line-height: 1.6;
-        }
-
         /* Responsive Design */
         @media (max-width: 768px) {
           .home-container {
@@ -327,16 +290,6 @@ export default function Home() {
           .third-text-block p {
             font-size: 1rem;
             text-align: left;
-          }
-
-          .notice-section {
-            margin-top: 2rem;
-            padding: 1.5rem;
-          }
-
-          .development-notice {
-            flex-direction: column;
-            text-align: center;
           }
         }
       `}</style>

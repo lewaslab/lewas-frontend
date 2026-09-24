@@ -46,7 +46,7 @@ const Layout = ({ children, title = 'LEWAS Lab Data' }) => {
                 </header>
                 <main>{children}</main>
                 <footer>
-                    <p>LEWAS Lab Environmental Monitoring - Under Development</p>
+                    <p>LEWAS Lab Environmental Monitoring</p>
                 </footer>
             </div>
 
