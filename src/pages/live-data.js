@@ -5,6 +5,23 @@ import Layout from '../components/Layout';
 import { ApiService, PARAMETER_CONFIG } from '../services/api';
 import { dataProcessor } from '../utils/dataProcessor';
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+// Earliest observation in the database (the station's data starts on this date)
+const FIRST_DATA_DATE = new Date(2025, 3, 15);
+
+// Local-time YYYY-MM-DD, the format used by <input type="date">
+const toDateInputValue = (date) => {
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+};
+
+const fromDateInputValue = (value, endOfDay) => {
+    const [year, month, day] = value.split('-').map(Number);
+    return endOfDay
+        ? new Date(year, month - 1, day, 23, 59, 59, 999)
+        : new Date(year, month - 1, day, 0, 0, 0, 0);
+};
+
 const LiveDataPage = () => {
     // State management
     const [unitSystem, setUnitSystem] = useState('US');
@@ -18,12 +35,20 @@ const LiveDataPage = () => {
         axis3: true
     });
     const [timeRange, setTimeRange] = useState('1day');
-    const [dateRange, setDateRange] = useState({
-        start: getYesterdaysDate(),
-        end: new Date()
+    const [dateRange, setDateRange] = useState(() => {
+        const end = new Date();
+        return { start: new Date(end.getTime() - DAY_MS), end };
     });
+    // Date picker values; only applied to dateRange when "Update Chart" is clicked
+    const [dateInputs, setDateInputs] = useState(() => ({
+        start: toDateInputValue(dateRange.start),
+        end: toDateInputValue(dateRange.end)
+    }));
+    const [dateError, setDateError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [progress, setProgress] = useState({ total: 0, done: 0 });
     const [data, setData] = useState({});
+    const abortRef = useRef(null);
 
     // D3 refs
     const svgRef = useRef();
@@ -62,17 +87,18 @@ const LiveDataPage = () => {
         ]
     };
 
-    // Helper function to get yesterday's date
-    function getYesterdaysDate() {
-        const date = new Date();
-        date.setDate(date.getDate() - 1);
-        return date;
-    }
+    const applyDateRange = (start, end) => {
+        setDateRange({ start, end });
+        setDateInputs({ start: toDateInputValue(start), end: toDateInputValue(end) });
+        setDateError('');
+    };
 
-    // Load data on component mount and when parameters change
+    // Load data when parameters change
     useEffect(() => {
         loadAllData();
-    }, [selectedParameters, dateRange, unitSystem]);
+    }, [selectedParameters, dateRange, unitSystem, showAxis]);
+
+    useEffect(() => () => abortRef.current?.abort(), []);
 
     // Update chart when data changes
     useEffect(() => {
@@ -88,35 +114,48 @@ const LiveDataPage = () => {
 
     // Load data for all selected parameters
     const loadAllData = async () => {
+        abortRef.current?.abort();
+        const controller = new AbortController();
+        abortRef.current = controller;
+        const fetchOptions = {
+            signal: controller.signal,
+            onProgress: (addTotal, addDone) => setProgress(prev => ({
+                total: prev.total + addTotal,
+                done: prev.done + addDone
+            }))
+        };
+
         setIsLoading(true);
+        setProgress({ total: 0, done: 0 });
         try {
-            const newData = {};
             console.log('Loading data with date range:', {
                 start: dateRange.start.toISOString(),
                 end: dateRange.end.toISOString()
             });
 
-            // Load data for each axis
-            for (const [axis, parameterType] of Object.entries(selectedParameters)) {
-                if (parameterType && (axis === 'axis1' || showAxis[axis])) {
-                    console.log(`Loading data for ${axis}: ${parameterType}`);
-                    const parameterData = await loadParameterData(parameterType);
-                    newData[axis] = parameterData;
-                    console.log(`Loaded ${parameterData.length} points for ${parameterType}`);
-                }
-            }
+            const axesToLoad = Object.entries(selectedParameters)
+                .filter(([axis, parameterType]) => parameterType && (axis === 'axis1' || showAxis[axis]));
 
-            setData(newData);
+            const loaded = await Promise.all(axesToLoad.map(async ([axis, parameterType]) => {
+                const parameterData = await loadParameterData(parameterType, fetchOptions);
+                console.log(`Loaded ${parameterData.length} points for ${parameterType}`);
+                const aggregate = parameterType.startsWith('rain_') ? 'max' : 'mean';
+                return [axis, dataProcessor.prepareForChart(parameterData, { aggregate })];
+            }));
+
+            if (controller.signal.aborted) return;
+            setData(Object.fromEntries(loaded));
         } catch (error) {
+            if (controller.signal.aborted) return;
             console.error('Error loading data:', error);
             alert('Error loading data: ' + error.message);
         } finally {
-            setIsLoading(false);
+            if (abortRef.current === controller) setIsLoading(false);
         }
     };
 
     // Load rating curve flow rate data based on stage
-    const loadRatingCurveFlowRate = async () => {
+    const loadRatingCurveFlowRate = async (fetchOptions) => {
         try {
             // Get stage data first
             const stageConfig = PARAMETER_CONFIG['stage'];
@@ -129,7 +168,7 @@ const LiveDataPage = () => {
             const endTime = dateRange.end.toISOString();
             console.log('Fetching stage data for rating curve calculation:', stageConfig);
 
-            const response = await ApiService.fetchParameterData(stageConfig, startTime, endTime);
+            const response = await ApiService.fetchParameterData(stageConfig, startTime, endTime, fetchOptions);
             console.log('Raw stage response for rating curve:', response);
 
             if (!response.observations || response.observations.length === 0) {
@@ -175,16 +214,17 @@ const LiveDataPage = () => {
 
             return formattedData;
         } catch (error) {
+            if (error.name === 'AbortError') return [];
             console.error('Error calculating rating curve flow rate:', error);
             return [];
         }
     };
 
     // Load data for a specific parameter
-    const loadParameterData = async (parameterType) => {
+    const loadParameterData = async (parameterType, fetchOptions) => {
         // Special handling for rating curve flow rate
         if (parameterType === 'flow_rate_rating_curve') {
-            return await loadRatingCurveFlowRate();
+            return await loadRatingCurveFlowRate(fetchOptions);
         }
 
         const config = PARAMETER_CONFIG[parameterType];
@@ -198,7 +238,7 @@ const LiveDataPage = () => {
             const endTime = dateRange.end.toISOString();
             console.log(`Fetching ${parameterType}:`, config);
 
-            const response = await ApiService.fetchParameterData(config, startTime, endTime);
+            const response = await ApiService.fetchParameterData(config, startTime, endTime, fetchOptions);
             console.log(`Raw response for ${parameterType}:`, response);
 
             if (!response.observations || response.observations.length === 0) {
@@ -224,6 +264,7 @@ const LiveDataPage = () => {
 
             return formattedData;
         } catch (error) {
+            if (error.name === 'AbortError') return [];
             console.error(`Error loading data for ${parameterType}:`, error);
             return [];
         }
@@ -284,6 +325,7 @@ const LiveDataPage = () => {
         g.selectAll(".bars").remove();
         g.selectAll(".axis-label").remove();
         g.selectAll(".line-path").remove();
+        g.selectAll(".no-data").remove();
 
         // Colors for each axis
         const colors = ["steelblue", "red", "green"];
@@ -294,6 +336,7 @@ const LiveDataPage = () => {
 
         if (allData.length === 0) {
             g.append("text")
+                .attr("class", "no-data")
                 .attr("x", width / 2)
                 .attr("y", height / 2)
                 .attr("text-anchor", "middle")
@@ -330,10 +373,16 @@ const LiveDataPage = () => {
         } else if (hours <= 72) {
             timeFormat = d3.timeFormat("%m/%d %H:%M");
             tickCount = 6;
-        } else {
+        } else if (hours <= 24 * 90) {
             timeFormat = d3.timeFormat("%m/%d");
-            tickCount = 5;
+            tickCount = 8;
+        } else {
+            timeFormat = d3.timeFormat("%b %Y");
+            tickCount = 10;
         }
+        const tooltipTimeFormat = hours <= 72
+            ? d3.timeFormat("%a %I:%M %p")
+            : d3.timeFormat("%b %d, %Y %I:%M %p");
 
         // Create x-axis
         const xAxis = d3.axisBottom(xScale)
@@ -369,7 +418,9 @@ const LiveDataPage = () => {
         const tooltip = d3.select(containerRef.current).select(".tooltip");
 
         // Process each axis
-        Object.entries(data).forEach(([axis, axisData], index) => {
+        Object.entries(data).forEach(([axis, seriesData], index) => {
+            // seriesData contains { y: null } gap markers; axisData is only the real points
+            const axisData = seriesData.filter(d => d.y != null);
             if (axisData.length === 0) return;
 
             console.log(`Processing axis ${index} (${axis}):`, axisData.length, 'points');
@@ -445,6 +496,8 @@ const LiveDataPage = () => {
             if (isRainIntensity) {
                 // Render rain intensity as bars spanning between mid-points
                 // Calculate bar positions and widths based on adjacent data points
+                // Cap bar half-width so bars next to an outage don't stretch across it
+                const maxHalfWidth = Math.max(2, width / axisData.length);
                 const bars = axisData.map((d, i) => {
                     let xStart, xEnd;
                     
@@ -463,6 +516,8 @@ const LiveDataPage = () => {
                         xStart = (xScale(axisData[i - 1].x) + xScale(d.x)) / 2;
                         xEnd = (xScale(d.x) + xScale(axisData[i + 1].x)) / 2;
                     }
+                    xStart = Math.max(xStart, xScale(d.x) - maxHalfWidth);
+                    xEnd = Math.min(xEnd, xScale(d.x) + maxHalfWidth);
                     
                     // For rain intensity with inverted scale: bars start from top (y=0) and extend down
                     const barY = 0; // Start from top of chart
@@ -510,7 +565,7 @@ const LiveDataPage = () => {
                                 ${getParameterLabel(selectedParameters[axis], unitSystem)}
                             </div>
                             <div style="margin-bottom: 3px;">
-                                ${d3.timeFormat("%a %I:%M %p")(d.data.x)}
+                                ${tooltipTimeFormat(d.data.x)}
                             </div>
                             <div style="font-size: 14px; font-weight: bold;">
                                 ${d.data.y.toFixed(2)} ${getUnitAbbr(selectedParameters[axis], unitSystem)}
@@ -538,13 +593,14 @@ const LiveDataPage = () => {
             } else {
                 // Create line generator for non-rain intensity parameters
                 const line = d3.line()
+                    .defined(d => d.y != null)
                     .x(d => xScale(d.x))
                     .y(d => yScales[index](d.y))
                     .curve(d3.curveMonotoneX);
 
                 // Add line path
                 g.append("path")
-                    .datum(axisData)
+                    .datum(seriesData)
                     .attr("class", `line-path line-${index}`)
                     .attr("fill", "none")
                     .attr("stroke", colors[index])
@@ -555,15 +611,16 @@ const LiveDataPage = () => {
 
             // Add data points (only for non-rain intensity parameters)
             if (!isRainIntensity) {
+                const dotRadius = axisData.length > 500 ? 1.5 : 3;
                 g.selectAll(`.dots-${index}`)
                     .data(axisData)
                     .join("circle")
                     .attr("class", `dots dots-${index}`)
                     .attr("cx", d => xScale(d.x))
                     .attr("cy", d => yScales[index](d.y))
-                    .attr("r", 3)
+                    .attr("r", dotRadius)
                     .style("fill", colors[index])
-                    .style("stroke", "white")
+                    .style("stroke", dotRadius < 3 ? "none" : "white")
                     .style("stroke-width", 1)
                     .style("cursor", "pointer")
                     .on("mouseover", function (event, d) {
@@ -588,7 +645,7 @@ const LiveDataPage = () => {
                                 ${getParameterLabel(selectedParameters[axis], unitSystem)}
                             </div>
                             <div style="margin-bottom: 3px;">
-                                ${d3.timeFormat("%a %I:%M %p")(d.x)}
+                                ${tooltipTimeFormat(d.x)}
                             </div>
                             <div style="font-size: 14px; font-weight: bold;">
                                 ${d.y.toFixed(2)} ${getUnitAbbr(selectedParameters[axis], unitSystem)}
@@ -612,7 +669,7 @@ const LiveDataPage = () => {
                         d3.select(this)
                             .transition()
                             .duration(200)
-                            .attr("r", 3)
+                            .attr("r", dotRadius)
                             .style("stroke-width", 1);
                     });
             }
@@ -677,29 +734,44 @@ const LiveDataPage = () => {
         }));
     };
 
-    // Handle time range change
     const handleTimeRangeChange = (range) => {
         setTimeRange(range);
-        const end = new Date();
-        const start = new Date();
+        if (range === 'custom') return;
 
-        switch (range) {
-            case '1day':
-                start.setDate(end.getDate() - 1);
-                break;
-            case '3days':
-                start.setDate(end.getDate() - 3);
-                break;
-            case '6days':
-                start.setDate(end.getDate() - 6);
-                break;
-            case '12days':
-                start.setDate(end.getDate() - 12);
-                break;
-            default:
-                start.setDate(end.getDate() - 1);
+        const end = new Date();
+        const presetDays = { '1day': 1, '7days': 7, '30days': 30 };
+        const start = range === 'all'
+            ? FIRST_DATA_DATE
+            : new Date(end.getTime() - presetDays[range] * DAY_MS);
+
+        applyDateRange(start, end);
+    };
+
+    // Editing the dates only updates the pickers; nothing loads until "Update Chart"
+    const handleDateInputChange = (field, value) => {
+        setDateInputs(prev => ({ ...prev, [field]: value }));
+        setTimeRange('custom');
+        setDateError('');
+    };
+
+    const handleUpdateChart = () => {
+        ApiService.clearCache();
+        if (timeRange !== 'custom') {
+            handleTimeRangeChange(timeRange);
+            return;
         }
 
+        if (!dateInputs.start || !dateInputs.end) {
+            setDateError('Pick both a "From" and a "To" date.');
+            return;
+        }
+        const start = fromDateInputValue(dateInputs.start, false);
+        const end = new Date(Math.min(fromDateInputValue(dateInputs.end, true).getTime(), Date.now()));
+        if (start >= end) {
+            setDateError('"From" must be before "To".');
+            return;
+        }
+        setDateError('');
         setDateRange({ start, end });
     };
 
@@ -737,17 +809,51 @@ const LiveDataPage = () => {
                         </div>
 
                         <div className="control-group">
-                            <label>Time Scale:</label>
+                            <label>Time Range:</label>
                             <select
                                 value={timeRange}
                                 onChange={(e) => handleTimeRangeChange(e.target.value)}
                             >
                                 <option value="1day">Past 24 hours</option>
-                                <option value="3days">Past 3 days</option>
-                                <option value="6days">Past 6 days</option>
-                                <option value="12days">Past 12 days</option>
+                                <option value="7days">Past 7 days</option>
+                                <option value="30days">Past 30 days</option>
+                                <option value="all">All available data</option>
+                                <option value="custom">Custom range</option>
                             </select>
                         </div>
+
+                        <div className="control-group">
+                            <label htmlFor="date-from">From:</label>
+                            <input
+                                id="date-from"
+                                type="date"
+                                value={dateInputs.start}
+                                min={toDateInputValue(FIRST_DATA_DATE)}
+                                max={dateInputs.end || undefined}
+                                onChange={(e) => handleDateInputChange('start', e.target.value)}
+                            />
+                            <label htmlFor="date-to" className="inline-label">To:</label>
+                            <input
+                                id="date-to"
+                                type="date"
+                                value={dateInputs.end}
+                                min={dateInputs.start || undefined}
+                                max={toDateInputValue(new Date())}
+                                onChange={(e) => handleDateInputChange('end', e.target.value)}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="range-hint">
+                        {dateError ? (
+                            <span className="range-error">{dateError}</span>
+                        ) : (
+                            <>
+                                Data is available from <strong>Apr 15, 2025</strong>. For a custom range, pick
+                                the dates and click <strong>Update Chart</strong>.
+                                {timeRange === 'all' && ' Loading all data can take up to a minute.'}
+                            </>
+                        )}
                     </div>
 
                     <div className="control-row">
@@ -806,7 +912,7 @@ const LiveDataPage = () => {
                     </div>
 
                     <div className="control-row action-row">
-                        <button onClick={loadAllData} disabled={isLoading} className="action-btn">
+                        <button onClick={handleUpdateChart} disabled={isLoading} className="action-btn">
                             {isLoading ? 'Updating Chart...' : 'Update Chart'}
                         </button>
                     </div>
@@ -817,6 +923,11 @@ const LiveDataPage = () => {
                         <div className="loading-spinner">
                             <div>Loading LEWAS data...</div>
                             <div className="spinner-animation"></div>
+                            {progress.total > 1 && (
+                                <div className="loading-progress">
+                                    {Math.round((100 * progress.done) / progress.total)}% loaded
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
@@ -904,7 +1015,38 @@ const LiveDataPage = () => {
                     transition: all 0.2s ease;
                 }
 
-                .control-group select:focus {
+                .control-group input[type="date"] {
+                    padding: 8px 12px;
+                    border: 2px solid #e9ecef;
+                    border-radius: 6px;
+                    font-size: 14px;
+                    font-family: inherit;
+                    background: white;
+                }
+
+                .control-group .inline-label {
+                    min-width: auto;
+                }
+
+                .range-hint {
+                    font-size: 13px;
+                    color: #555;
+                    margin: -10px 0 20px;
+                }
+
+                .range-error {
+                    color: #c0392b;
+                    font-weight: bold;
+                }
+
+                .loading-progress {
+                    margin-top: 15px;
+                    font-size: 14px;
+                    color: #555;
+                }
+
+                .control-group select:focus,
+                .control-group input[type="date"]:focus {
                     outline: none;
                     border-color: #007bff;
                     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);

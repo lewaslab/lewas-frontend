@@ -248,6 +248,56 @@ export class DataProcessor {
         }).filter(Boolean); // Remove any null entries
     }
 
+    // Reduce long series to roughly `maxPoints` time buckets for drawing and insert
+    // { y: null } markers where the station was offline so lines are not drawn across outages.
+    // `aggregate` is 'mean' or 'max' (max keeps rain peaks visible).
+    prepareForChart(points, { maxPoints = 1500, aggregate = 'mean' } = {}) {
+        if (points.length === 0) return points;
+
+        const startMs = points[0].x.getTime();
+        const spanMs = points[points.length - 1].x.getTime() - startMs;
+        let series = points;
+        let bucketMs = 0;
+
+        if (points.length > maxPoints && spanMs > 0) {
+            bucketMs = spanMs / maxPoints;
+            series = [];
+            let bucket = null;
+            const flush = () => {
+                if (!bucket) return;
+                series.push({
+                    x: new Date(bucket.sumX / bucket.n),
+                    y: aggregate === 'max' ? bucket.max : bucket.sumY / bucket.n,
+                    unit: bucket.unit
+                });
+            };
+            for (const p of points) {
+                const index = Math.floor((p.x.getTime() - startMs) / bucketMs);
+                if (!bucket || bucket.index !== index) {
+                    flush();
+                    bucket = { index, n: 0, sumX: 0, sumY: 0, max: -Infinity, unit: p.unit };
+                }
+                bucket.n++;
+                bucket.sumX += p.x.getTime();
+                bucket.sumY += p.y;
+                bucket.max = Math.max(bucket.max, p.y);
+            }
+            flush();
+        }
+
+        const gapMs = Math.max(3 * 60 * 60 * 1000, 3 * bucketMs);
+        const result = [series[0]];
+        for (let i = 1; i < series.length; i++) {
+            const prevMs = series[i - 1].x.getTime();
+            const currMs = series[i].x.getTime();
+            if (currMs - prevMs > gapMs) {
+                result.push({ x: new Date((prevMs + currMs) / 2), y: null });
+            }
+            result.push(series[i]);
+        }
+        return result;
+    }
+
     // Filter data by time range
     filterByTimeRange(data, startTime, endTime) {
         const start = new Date(startTime);

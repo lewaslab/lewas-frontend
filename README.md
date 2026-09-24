@@ -28,7 +28,7 @@ The LEWAS Frontend is a modern, responsive web application that provides real-ti
 
 - **Real-time Charts**: Live updating graphs with D3.js
 - **Multi-parameter Display**: Overlay up to 3 different measurements
-- **Time Range Controls**: From 12 hours to 12 days of data
+- **Time Range Controls**: Any date range from the first available data to today
 - **Unit System Toggle**: Switch between SI and US Imperial units
 - **Responsive Design**: Works on desktop, tablet, and mobile
 
@@ -175,10 +175,11 @@ src/
 
 ### Time Range Options
 
-- **Past 12 Hours**: High-resolution recent data
-- **Past 3 Days**: Short-term trend analysis
-- **Past 6 Days**: Weekly pattern observation
-- **Past 12 Days**: Extended trend monitoring
+- **Past 24 Hours / 7 Days / 30 Days**: Measured back from now
+- **All Available Data**: Everything since the first recorded observation (Apr 15, 2025)
+- **Custom Range**: Pick From/To dates, then click "Update Chart"
+
+Long ranges are downsampled for display, and outages appear as breaks in the lines.
 
 ## 🔧 Configuration
 
