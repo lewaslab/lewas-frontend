@@ -17,9 +17,42 @@ export default function NSFProjects() {
         </h1>
         
         <div className="nsf-project-content">
-          {/* Title */}
+          {/* RET Site */}
           <h2 className="project-title">
-            1) NSF/IUSE Project: An Interdisciplinary Approach to Prepare Undergraduates for Data Science Using Real-World Data from High-Frequency Monitoring Systems
+            1) RET Site: Interdisciplinary Water Science and Engineering
+          </h2>
+
+          <h3 className="section-subtitle">Project Summary</h3>
+
+          <div className="content-text">
+            <p>
+              The NSF RET Site: Interdisciplinary Water Science and Engineering (Award #2601558) at Virginia Tech provides a six-week interdisciplinary research and professional development experience for grades 9–12, community college, and pre-service teachers in Southwest Virginia. The project connects educators with current water science and engineering research—including water quality, sustainability, environmental monitoring, artificial intelligence, and biotechnology—and supports them in developing research-based STEM learning modules for their classrooms. Through its connection with the LEWAS Laboratory, the project brings authentic water data, environmental research, sensing technologies, and data-driven approaches into educational experiences, helping teachers and students explore real-world water challenges and the role of interdisciplinary engineering in addressing them.
+            </p>
+          </div>
+
+          <div className="content-text project-meta">
+            <p>
+              <strong>PI:</strong> Vinod K. Lohani | <strong>Co-PI:</strong> Natasha L. Bell
+            </p>
+            <p>
+              <strong>Project Period:</strong> October 1, 2026 – September 30, 2029 | <strong>Award:</strong> $600,000
+            </p>
+            <p>
+              NSF Award{' '}
+              <a
+                href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=2601558"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 underline"
+              >
+                #2601558
+              </a>
+            </p>
+          </div>
+
+          {/* IUSE Project */}
+          <h2 className="project-title">
+            2) NSF/IUSE Project: An Interdisciplinary Approach to Prepare Undergraduates for Data Science Using Real-World Data from High-Frequency Monitoring Systems
           </h2>
           
           {/* Project Summary Subtitle */}
@@ -555,8 +588,13 @@ export default function NSFProjects() {
           font-weight: bold;
           color: #2c3e50;
           text-align: center;
+          margin-top: 3rem;
           margin-bottom: 2rem;
           line-height: 1.4;
+        }
+
+        .project-title:first-of-type {
+          margin-top: 0;
         }
 
         .section-subtitle {
