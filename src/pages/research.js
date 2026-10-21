@@ -14,7 +14,7 @@ export default function Research() {
                   1) Ongoing NSF Projects
                 </h2>
                 <p className="text-gray-600">
-                  Current National Science Foundation funded research initiatives
+                  Current NSF-funded initiatives, including the RET Site on Interdisciplinary Water Science and Engineering and the NSF/IUSE data science project
                 </p>
               </div>
             </Link>
